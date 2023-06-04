@@ -12,7 +12,7 @@ This Rust code implements a Markov chain-based text generation algorithm. It all
 
 Clone the repository:
 
-    $ git clone <repository-url>
+    $ git clone https://github.com/modestimpala/markov-rs.git
 
 Build and run the project:
 
