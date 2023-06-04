@@ -1,13 +1,10 @@
 use std::collections::HashMap;
 use std::fs;
-use std::io::{self, Read};
-use std::path::PathBuf;
-use std::ops::AddAssign;
+use std::io;
 use std::option::Option;
 use std::vec::Vec;
 
 use rand::distributions::{Distribution, WeightedIndex};
-use rand::Rng;
 use tokio::fs::File;
 use tokio::io::AsyncReadExt;
 use tokio::sync::mpsc;
@@ -92,6 +89,7 @@ impl<T> Markov<T>
 
                 for (letter, count) in &source_entry.1 {
                     letters.push(letter.clone());
+
                     weights.push(*count);
                 }
 
@@ -107,25 +105,6 @@ impl<T> Markov<T>
     }
 }
 
-fn get_directory_size(dir_path: &str) -> u64 {
-    let mut total_size = 0;
-
-    if let Ok(entries) = fs::read_dir(dir_path) {
-        for entry in entries {
-            if let Ok(entry) = entry {
-                if let Ok(metadata) = entry.metadata() {
-                    if metadata.is_file() {
-                        total_size += metadata.len();
-                    }
-                }
-            }
-        }
-    }
-
-    total_size
-}
-
-
 #[tokio::main]
 async fn main() {
     let mut markov: Markov<u8> = Markov::new();
@@ -137,7 +116,6 @@ async fn main() {
         .expect("Failed to read line");
 
     let dir_path = dir_path.trim();
-    let total_size = get_directory_size(&dir_path);
     let entries = fs::read_dir(dir_path).expect("Failed to read directory");
 
     let (tx, mut rx) = mpsc::channel(100); // Specify the buffer size
@@ -169,8 +147,6 @@ async fn main() {
     }
 
     drop(tx);
-
-    let mut total_bytes_read = 0;
 
     for task in tasks {
         task.await.expect("Failed to wait for task");
