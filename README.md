@@ -1,6 +1,6 @@
 # Markov Text Generation with Rust
 
-This Rust code implements a Markov chain-based text generation algorithm. It allows you to generate random text based on the patterns observed in a given set of input texts. It implements a second-order markov chain algorithm. 
+This Rust code implements a second-order Markov chain-based text generation algorithm, with weighted distribution. It allows you to generate random text based on the patterns observed in a given set of input texts.
 
 ## Requirements
 
